@@ -33,14 +33,14 @@ const resolvers = {
       if (!asset || !user) {
         return new AuthenticationError("Not authorized to access this content");
       }
-      const model = getCollection(asset, userCollection, userSchema);
+      const model = getCollection(userCollection, userSchema);
       return await model.find();
     },
   },
 
   Mutation: {
     createEmailAccount: async (_: any, args: any, { asset, user }: any) => {
-      const model = getCollection(asset, userCollection, userSchema);
+      const model = getCollection(userCollection, userSchema);
       const response = await model.findOneAndUpdate(
         { email: args.payload.email, resolver: "email" },
         { ...args.payload, resolver: "email" },

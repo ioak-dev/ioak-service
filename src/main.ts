@@ -53,9 +53,9 @@ app.use((_: any, res: any) => {
   res.end();
 });
 
-app.listen({ port: process.env.PORT || 4010 }, () =>
+app.listen({ port: process.env.PORT || 4000 }, () =>
   console.log(
-    `🚀 Server ready at http://localhost:${process.env.PORT || 4010}${
+    `🚀 Server ready at http://localhost:${process.env.PORT || 4000}${
       server.graphqlPath
     }`
   )

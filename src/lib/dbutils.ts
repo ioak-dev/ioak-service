@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 export const getCollection = (
-  realm: number,
   collection: any,
   schema: any
 ): any => {
