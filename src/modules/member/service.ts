@@ -8,6 +8,11 @@ const selfRealm = 100;
 
 export const addMember = async (req: any, res: any) => {
   const member: any = await Helper.addMember(req.body);
+  if (member === "EMAIL_EXISTS") {
+    res.status(409);
+    res.end();
+    return;
+  }
   res.status(200);
   res.send(member);
   res.end();
