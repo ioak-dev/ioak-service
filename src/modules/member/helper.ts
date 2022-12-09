@@ -16,8 +16,11 @@ export const addMember = async (data: any) => {
   const model = getCollection(memberCollection, memberSchema);
   const existingMember = await model.find({ email: data.email })
   if (existingMember.length > 0) {
+    console.log("----", existingMember[0].email, existingMember[0]._doc);
+    _sendRegistrationConfirmation(existingMember[0].email, existingMember[0].firstName, existingMember[0].lastName);
     return "EMAIL_EXISTS";
   }
+  _sendRegistrationConfirmation(existingMember.email, existingMember.firstName, existingMember.lastName);
   return await model.create({
     ...data,
     from: parse(data.memberDate, "yyyy-MM-dd", new Date()),
@@ -36,7 +39,7 @@ const _sendRegistrationConfirmation = (email: string, firstName: string, lastNam
     { name: "TEMPLATE_USER_DISPLAY_NAME", value: `${firstName} ${lastName}` },
     { name: "TEMPLATE_MEMBER_PAGE_URL", value: "http" }
   ]);
-
+console.log("****", email);
   sendMail({
     to: email,
     subject: "IOAK registration confirmation",
