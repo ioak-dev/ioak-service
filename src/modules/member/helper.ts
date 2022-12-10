@@ -1,12 +1,13 @@
 const axios = require("axios");
 import { parse } from "date-fns";
-const ONEAUTH_API = process.env.ONEAUTH_API || "http://localhost:4010/api";
 import { memberCollection, memberSchema } from "./model";
 import { format } from "date-fns";
 const { getCollection } = require("../../lib/dbutils");
 import { v4 as uuidv4 } from 'uuid';
 import fs from "fs";
 import { convertMessage, sendMail } from "../../lib/mailutils";
+import { processFileUpload } from "../../lib/minioutils";
+import { nextval } from "../sequence/service";
 
 const adminKey = process.env.ADMIN_KEY || "1234";
 
@@ -25,6 +26,9 @@ export const addMember = async (data: any) => {
     ...data,
     from: parse(data.memberDate, "yyyy-MM-dd", new Date()),
     code: uuidv4(),
+    memberId: await nextval({
+      field: "memberId"
+    }),
     status: "Registered"
   });
 };
@@ -39,7 +43,7 @@ const _sendRegistrationConfirmation = (email: string, firstName: string, lastNam
     { name: "TEMPLATE_USER_DISPLAY_NAME", value: `${firstName} ${lastName}` },
     { name: "TEMPLATE_MEMBER_PAGE_URL", value: "http" }
   ]);
-console.log("****", email);
+  console.log("****", email);
   sendMail({
     to: email,
     subject: "IOAK registration confirmation",
@@ -70,3 +74,15 @@ export const getMemberById = async (id: string) => {
     ...memberResponse._doc
   };
 };
+
+export const updateMemberAvatar = async (id: string, file: any) => {
+  const model = getCollection(memberCollection, memberSchema);
+  const extension = file.originalname.substr(file.originalname.lastIndexOf("."));
+  const filename = `${id}${extension}`;
+  const fileurl = await processFileUpload("avatar", filename, file);
+  const response = await model.findByIdAndUpdate(
+    id, { profilePic: fileurl },
+    { new: true, upsert: true }
+  );
+  return response;
+}

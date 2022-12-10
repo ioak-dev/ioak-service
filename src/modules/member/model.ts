@@ -17,6 +17,7 @@ const memberSchema = new Schema(
     profilePic: { type: String },
     experienceSince: { type: Date },
     status: { type: String },
+    memberId: { type: Number }
   },
   { timestamps: true }
 );

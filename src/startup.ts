@@ -1,5 +1,7 @@
 import { createSequence } from "./modules/sequence/service";
 
 export const initializeSequences = () => {
-  // createSequence("assetId", null, 1);
+  createSequence({
+    field: "memberId", factor: 1
+  });
 };

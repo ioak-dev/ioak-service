@@ -35,6 +35,14 @@ export const getMember = async (req: any, res: any) => {
   res.end();
 };
 
+export const uploadMemberAvatar = async (req: any, res: any) => {
+  const userId = req.userId;
+  const response: any = await Helper.updateMemberAvatar(req.params.id, req.file);
+  res.status(200);
+  res.send(response);
+  res.end();
+};
+
 export const getMemberById = async (req: any, res: any) => {
   const userId = req.user.user_id;
   const member: any = await Helper.getMemberById(req.params.id);
