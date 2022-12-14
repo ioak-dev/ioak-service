@@ -51,7 +51,7 @@ const _sendRegistrationConfirmation = (email: string, firstName: string, lastNam
   });
 }
 
-export const updateMember = async (memberId: string, data: any, code: string) => {
+export const updateMember = async (memberId: string, data: any) => {
   const model = getCollection(memberCollection, memberSchema);
   return await model.findByIdAndUpdate(
     memberId, { ...data, status: data.status === "Registered" ? "Active" : data.status },

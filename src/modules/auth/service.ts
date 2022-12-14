@@ -38,8 +38,10 @@ export const signin = async (req: any, res: any, next: any) => {
     return;
   }
 
-  const refresh_token = await Helper.createSession(
-    member._doc
+  const refresh_token = await Helper.createSession({
+    id: member._doc._id,
+    memberId: member._doc.memberId,
+  }
   );
 
   const access_token = await Helper.getAccessToken(refresh_token);

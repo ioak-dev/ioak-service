@@ -12,12 +12,12 @@ const appUrl = process.env.APP_URL || "http://localhost:3010";
 
 export const createSession = async (member: any) => {
   const appRoot = process.cwd();
-  const privateKey = fs.readFileSync(appRoot + "/private.pem");
+  const privateKey = fs.readFileSync(appRoot + "/local_private.pem");
   const refresh_token = jwt.sign(member,
-    { key: privateKey, passphrase: "no1knowsme" },
+    { key: privateKey, passphrase: "fevicryl" },
     {
       algorithm: "RS256",
-      expiresIn: "8h",
+      expiresIn: "24h",
     }
   );
 
@@ -28,7 +28,7 @@ export const getAccessToken = async (refreshToken: string) => {
   const decoded: any = await decodeToken(refreshToken);
   const claims: any = decoded.claims;
   const appRoot = process.cwd();
-  const privateKey = fs.readFileSync(appRoot + "/private.pem");
+  const privateKey = fs.readFileSync(appRoot + "/local_private.pem");
   // const access_token = jwt.sign(
   //   session.claims,
   //   { key: privateKey, passphrase: "no1knowsme" },
@@ -43,7 +43,7 @@ export const getAccessToken = async (refreshToken: string) => {
 
 export const decodeToken = async (token: string) => {
   const appRoot = process.cwd();
-  const publicKey = fs.readFileSync(appRoot + "/public.pem");
+  const publicKey = fs.readFileSync(appRoot + "/local_public.pem");
   try {
     const res = await jwt.verify(token, publicKey);
     return { outcome: true, token, claims: res };

@@ -19,11 +19,17 @@ export const addMember = async (req: any, res: any) => {
 };
 
 export const updateMember = async (req: any, res: any) => {
-  const code = req.userId;
-  const member: any = await Helper.updateMember(req.params.id, req.body, code);
-  res.status(200);
-  res.send(member);
-  res.end();
+  const id = req.user.id;
+  const memberId = req.user.memberId;
+  if (req.params.id !== id) {
+    res.status(401);
+    res.end();
+  } else {
+    const member: any = await Helper.updateMember(req.params.id, req.body);
+    res.status(200);
+    res.send(member);
+    res.end();
+  }
 };
 
 export const getMember = async (req: any, res: any) => {
@@ -36,11 +42,17 @@ export const getMember = async (req: any, res: any) => {
 };
 
 export const uploadMemberAvatar = async (req: any, res: any) => {
-  const userId = req.userId;
-  const response: any = await Helper.updateMemberAvatar(req.params.id, req.file);
-  res.status(200);
-  res.send(response);
-  res.end();
+  const id = req.user.id;
+  const memberId = req.user.memberId;
+  if (req.params.id !== id) {
+    res.status(401);
+    res.end();
+  } else {
+    const response: any = await Helper.updateMemberAvatar(req.params.id, req.file);
+    res.status(200);
+    res.send(response);
+    res.end();
+  }
 };
 
 export const getMemberById = async (req: any, res: any) => {
