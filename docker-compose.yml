@@ -15,9 +15,9 @@ services:
       MINIO_PORT: 8090
       MINIO_ACCESS_KEY: a2BSMeluIRysoTT6
       MINIO_SECRET: WoCjAVV0O4D8AzL3MWYmo2oR3NVWvora
-      PORT: 8005
+      PORT: 8035
     ports:
-      - 8005:8005
+      - 8035:8035
     networks:
       ioak-net:
         aliases:

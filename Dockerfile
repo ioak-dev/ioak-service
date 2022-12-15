@@ -6,5 +6,5 @@ RUN npm install --production --silent && mv node_modules ../
 COPY . .
 COPY ./public.pem /usr/src/app/public.pem
 COPY ./private.pem /usr/src/app/private.pem
-EXPOSE 8015
+EXPOSE 8035
 CMD ["npm", "start"]
