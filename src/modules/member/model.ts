@@ -19,7 +19,8 @@ const memberSchema = new Schema(
     status: { type: String },
     memberId: { type: Number },
     starred: { type: Boolean },
-    views: { type: Number }
+    views: { type: Number },
+    country: { type: String }
   },
   { timestamps: true }
 );

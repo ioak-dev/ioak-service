@@ -17,12 +17,12 @@ export const addMember = async (data: any) => {
   const model = getCollection(memberCollection, memberSchema);
   const existingMember = await model.find({ email: data.email })
   if (existingMember.length > 0) {
+    const member = existingMember[0];
     console.log("----", existingMember[0].email, existingMember[0]._doc);
-    _sendRegistrationConfirmation(existingMember[0].email, existingMember[0].firstName, existingMember[0].lastName);
+    _sendRegistrationConfirmation(member.email, member.firstName, member.lastName, member.memberId, member.code);
     return "EMAIL_EXISTS";
   }
-  _sendRegistrationConfirmation(existingMember.email, existingMember.firstName, existingMember.lastName);
-  return await model.create({
+  const member = await model.create({
     ...data,
     from: parse(data.memberDate, "yyyy-MM-dd", new Date()),
     code: uuidv4(),
@@ -32,9 +32,11 @@ export const addMember = async (data: any) => {
     status: "Registered",
     views: 0
   });
+  _sendRegistrationConfirmation(member.email, member.firstName, member.lastName, member.memberId, member.code);
+  return member;
 };
 
-const _sendRegistrationConfirmation = (email: string, firstName: string, lastName: string) => {
+const _sendRegistrationConfirmation = (email: string, firstName: string, lastName: string, memberId: number, password: string) => {
 
   const emailBodyTemplate = fs.readFileSync(
     appRoot + "/src/emailtemplate/RegistrationConfirmation.html"
@@ -42,7 +44,8 @@ const _sendRegistrationConfirmation = (email: string, firstName: string, lastNam
 
   const emailBody = convertMessage(emailBodyTemplate.toString(), [
     { name: "TEMPLATE_USER_DISPLAY_NAME", value: `${firstName} ${lastName}` },
-    { name: "TEMPLATE_MEMBER_PAGE_URL", value: "http" }
+    { name: "TEMPLATE_USER_PASSWORD", value: password },
+    { name: "TEMPLATE_URL", value: `https://members.ioak.io/#/member/${memberId}/edit` }
   ]);
   console.log("****", email);
   sendMail({
