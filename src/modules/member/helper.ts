@@ -75,6 +75,16 @@ export const getMemberById = async (id: string) => {
   };
 };
 
+export const getMemberByMemberId = async (memberId: string, trackViewCount?: boolean) => {
+  const model = getCollection(memberCollection, memberSchema);
+
+  const memberResponse = await model.findOne({ memberId: memberId });
+
+  return {
+    ...memberResponse._doc
+  };
+};
+
 export const updateMemberAvatar = async (id: string, file: any) => {
   const model = getCollection(memberCollection, memberSchema);
   const extension = file.originalname.substr(file.originalname.lastIndexOf("."));

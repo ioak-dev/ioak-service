@@ -7,6 +7,8 @@ import {
   uploadMemberAvatar,
   updateMember,
   getMember,
+  getMemberByMemberId,
+  getMemberByMemberIdForEdit
 } from "./service";
 
 const selfRealm = 100;
@@ -17,4 +19,6 @@ module.exports = function (router: any) {
   router.post("/member/:id/avatar", upload.single("file"), authorizeApi, asyncHandler(uploadMemberAvatar));
   router.put("/member/:id", authorizeApi, asyncHandler(updateMember));
   router.get("/member", asyncHandler(getMember));
+  router.get("/member/:memberid", asyncHandler(getMemberByMemberId));
+  router.get("/member/:memberid/edit", asyncHandler(getMemberByMemberIdForEdit));
 };

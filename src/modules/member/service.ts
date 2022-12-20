@@ -62,3 +62,19 @@ export const getMemberById = async (req: any, res: any) => {
   res.send(member);
   res.end();
 };
+
+
+export const getMemberByMemberId = async (req: any, res: any) => {
+  const member: any = await Helper.getMemberByMemberId(req.params.memberid, true);
+  res.status(200);
+  res.send(member);
+  res.end();
+};
+
+
+export const getMemberByMemberIdForEdit = async (req: any, res: any) => {
+  const member: any = await Helper.getMemberByMemberId(req.params.memberid, false);
+  res.status(200);
+  res.send(member);
+  res.end();
+};
