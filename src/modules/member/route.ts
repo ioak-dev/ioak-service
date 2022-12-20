@@ -1,7 +1,7 @@
 const multer = require("multer");
 var upload = multer();
 import { asyncHandler } from "../../handler";
-import { authorizeApi } from "../../middlewares";
+import { authorizeApi, authorizeApiRead } from "../../middlewares";
 import {
   addMember,
   uploadMemberAvatar,
@@ -19,6 +19,6 @@ module.exports = function (router: any) {
   router.post("/member/:id/avatar", upload.single("file"), authorizeApi, asyncHandler(uploadMemberAvatar));
   router.put("/member/:id", authorizeApi, asyncHandler(updateMember));
   router.get("/member", asyncHandler(getMember));
-  router.get("/member/:memberid", asyncHandler(getMemberByMemberId));
+  router.get("/member/:memberid", authorizeApiRead, asyncHandler(getMemberByMemberId));
   router.get("/member/:memberid/edit", asyncHandler(getMemberByMemberIdForEdit));
 };

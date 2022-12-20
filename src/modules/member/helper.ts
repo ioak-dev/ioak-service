@@ -76,7 +76,8 @@ export const getMemberById = async (id: string) => {
   };
 };
 
-export const getMemberByMemberId = async (memberId: string, trackViewCount?: boolean) => {
+export const getMemberByMemberId = async (memberId: string, userId: string | null, trackViewCount?: boolean) => {
+  console.log("userId=", userId, memberId);
   const model = getCollection(memberCollection, memberSchema);
 
   const memberResponse = await model.findOne({ memberId: memberId });
@@ -93,6 +94,8 @@ export const getMemberByMemberId = async (memberId: string, trackViewCount?: boo
       { new: true, upsert: true }
     );
   }
+
+  // console.log(member);
 
   return member;
 };
