@@ -29,7 +29,8 @@ export const addMember = async (data: any) => {
     memberId: await nextval({
       field: "memberId"
     }),
-    status: "Registered"
+    status: "Registered",
+    views: 0
   });
 };
 
@@ -80,9 +81,20 @@ export const getMemberByMemberId = async (memberId: string, trackViewCount?: boo
 
   const memberResponse = await model.findOne({ memberId: memberId });
 
-  return {
-    ...memberResponse._doc
-  };
+  if (!memberResponse) {
+    return null;
+  }
+
+  const member = memberResponse._doc;
+
+  if (trackViewCount) {
+    await model.findByIdAndUpdate(
+      member._id, { ...member, views: (member.views || 0) + 1 },
+      { new: true, upsert: true }
+    );
+  }
+
+  return member;
 };
 
 export const updateMemberAvatar = async (id: string, file: any) => {

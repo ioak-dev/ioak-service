@@ -18,7 +18,8 @@ const memberSchema = new Schema(
     experienceSince: { type: Date },
     status: { type: String },
     memberId: { type: Number },
-    starred: { type: Boolean }
+    starred: { type: Boolean },
+    views: { type: Number }
   },
   { timestamps: true }
 );

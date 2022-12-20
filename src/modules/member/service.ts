@@ -66,6 +66,11 @@ export const getMemberById = async (req: any, res: any) => {
 
 export const getMemberByMemberId = async (req: any, res: any) => {
   const member: any = await Helper.getMemberByMemberId(req.params.memberid, true);
+  if (!member) {
+    res.status(404);
+    res.end();
+    return;
+  }
   res.status(200);
   res.send(member);
   res.end();
@@ -74,6 +79,11 @@ export const getMemberByMemberId = async (req: any, res: any) => {
 
 export const getMemberByMemberIdForEdit = async (req: any, res: any) => {
   const member: any = await Helper.getMemberByMemberId(req.params.memberid, false);
+  if (!member) {
+    res.status(404);
+    res.end();
+    return;
+  }
   res.status(200);
   res.send(member);
   res.end();
