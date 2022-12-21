@@ -1,5 +1,6 @@
 import { Client } from "minio";
 const FileReader = require("filereader");
+import { format } from "date-fns";
 
 const minioUrl = process.env.MINIO_URL || "localhost";
 const minioPort: number = process.env.MINIO_PORT ? parseInt(process.env.MINIO_PORT) : 8085;
@@ -29,7 +30,9 @@ export const processFileUpload = async (
     `${dir}/${filename}`,
     file.buffer
   );
-  const fileUrl = `${minioUrl === "localhost" ? "http" : "https"}://${minioUrl}:${minioPort}/ioaksite/${dir}/${filename}`;
+
+  const from = format(new Date(), 'yyyyMMdd-HHmmss');
+  const fileUrl = `${minioUrl === "localhost" ? "http" : "https"}://${minioUrl}:${minioPort}/ioaksite/${dir}/${filename}?from=${from}`;
   return fileUrl;
 };
 
