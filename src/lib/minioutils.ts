@@ -3,8 +3,8 @@ const FileReader = require("filereader");
 
 const minioUrl = process.env.MINIO_URL || "localhost";
 const minioPort: number = process.env.MINIO_PORT ? parseInt(process.env.MINIO_PORT) : 8085;
-const minioAccessKey = process.env.MINIO_ACCESS_KEY || "jzxhTYplg9367M9w";
-const minioSecret = process.env.MINIO_SECRET || "p2JRcSZL0TFIdTG0zc07UhlLwnfF5DAk";
+const minioAccessKey = process.env.MINIO_ACCESS_KEY || "systemadmin";
+const minioSecret = process.env.MINIO_SECRET || "systemadmin";
 
 export const processFileUpload = async (
   dir: string,
