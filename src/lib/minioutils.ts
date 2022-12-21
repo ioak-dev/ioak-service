@@ -20,6 +20,10 @@ export const processFileUpload = async (
     secretKey: minioSecret,
     useSSL: minioUrl !== "localhost",
   });
+  await minioClient.removeObject(
+    "ioaksite",
+    `${dir}/${filename}`
+  );
   const out = await minioClient.putObject(
     "ioaksite",
     `${dir}/${filename}`,
