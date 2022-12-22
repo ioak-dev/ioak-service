@@ -99,7 +99,7 @@ export const decodeToken = async (req: any, res: any, next: any) => {
 export const changepassword = async (req: any, res: any, next: any) => {
   const userId = req.user.id;
   const payload = req.body;
-  if (!req.userId) {
+  if (!userId) {
     res.status(401);
     res.end();
     return;
