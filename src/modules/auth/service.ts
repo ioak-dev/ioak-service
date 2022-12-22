@@ -20,7 +20,7 @@ export const signin = async (req: any, res: any, next: any) => {
   }
   const model = getCollection(memberCollection, memberSchema);
   const member: any = await model.findOne({
-    email: payload.email
+    email: payload.email.toLowerCase()
   });
   if (!member) {
     res.status(404);
@@ -92,5 +92,38 @@ export const issueToken = async (req: any, res: any, next: any) => {
 export const decodeToken = async (req: any, res: any, next: any) => {
   res.status(200);
   res.send({ ...req.user });
+  res.end();
+};
+
+
+export const changepassword = async (req: any, res: any, next: any) => {
+  const userId = req.userId;
+  const payload = req.body;
+  if (!req.userId) {
+    res.status(401);
+    res.end();
+    return;
+  }
+  if (
+    !validateMandatoryFields(res, payload, [
+      "password"
+    ])
+  ) {
+    return;
+  }
+  const model = getCollection(memberCollection, memberSchema);
+  const member: any = await model.findOne({
+    _id: userId
+  });
+  if (!member) {
+    res.status(404);
+    res.send({ error: { message: "User does not exist" } });
+    res.end();
+    return;
+  }
+
+  const outcome = await Helper.changepassword(userId, payload.password);
+  res.status(200);
+  res.send(outcome);
   res.end();
 };

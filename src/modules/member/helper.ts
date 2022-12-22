@@ -18,12 +18,12 @@ export const addMember = async (data: any) => {
   const existingMember = await model.find({ email: data.email })
   if (existingMember.length > 0) {
     const member = existingMember[0];
-    console.log("----", existingMember[0].email, existingMember[0]._doc);
     _sendRegistrationConfirmation(member.email, member.firstName, member.lastName, member.memberId, member.code);
     return "EMAIL_EXISTS";
   }
   const member = await model.create({
     ...data,
+    email: data.email.toLowerCase(),
     from: parse(data.memberDate, "yyyy-MM-dd", new Date()),
     code: uuidv4(),
     memberId: await nextval({
@@ -47,7 +47,6 @@ const _sendRegistrationConfirmation = (email: string, firstName: string, lastNam
     { name: "TEMPLATE_USER_PASSWORD", value: password },
     { name: "TEMPLATE_URL", value: `https://members.ioak.io/#/member/${memberId}/edit` }
   ]);
-  console.log("****", email);
   sendMail({
     to: email,
     subject: "IOAK registration confirmation",
@@ -58,7 +57,7 @@ const _sendRegistrationConfirmation = (email: string, firstName: string, lastNam
 export const updateMember = async (memberId: string, data: any) => {
   const model = getCollection(memberCollection, memberSchema);
   return await model.findByIdAndUpdate(
-    memberId, { ...data, status: data.status === "Registered" ? "Active" : data.status },
+    memberId, { ...data, email: data.email.toLowerCase(), status: data.status === "Registered" ? "Active" : data.status },
     { new: true, upsert: true }
   );
 };

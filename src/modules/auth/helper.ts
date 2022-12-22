@@ -6,6 +6,7 @@ import { add, addDays, differenceInSeconds } from "date-fns";
 
 import { getCollection } from "../../lib/dbutils";
 import { userCollection, userSchema } from "../user/model";
+import { memberCollection, memberSchema } from "../member/model";
 
 const selfRealm = 100;
 const appUrl = process.env.APP_URL || "http://localhost:3010";
@@ -83,3 +84,11 @@ export const decodeAppToken = async (token: string) => {
     return { outcome: false, err };
   }
 };
+
+export const changepassword = async (userId: String, code: string) => {
+  const model = getCollection(memberCollection, memberSchema);
+  return await model.findByIdAndUpdate(
+    userId, { code },
+    { new: true, upsert: true }
+  );
+}
