@@ -97,7 +97,7 @@ export const decodeToken = async (req: any, res: any, next: any) => {
 
 
 export const changepassword = async (req: any, res: any, next: any) => {
-  const userId = req.userId;
+  const userId = req.user.id;
   const payload = req.body;
   if (!req.userId) {
     res.status(401);
