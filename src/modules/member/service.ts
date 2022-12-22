@@ -92,7 +92,7 @@ export const getMemberByMemberIdForEdit = async (req: any, res: any) => {
 };
 
 export const forgotPassword = async (req: any, res: any) => {
-  const member: any = await Helper.forgotPassword(req.payload.email);
+  const member: any = await Helper.forgotPassword(req.body.email);
   if (!member) {
     res.status(404);
     res.end();
