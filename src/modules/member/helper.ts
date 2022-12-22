@@ -113,3 +113,14 @@ export const updateMemberAvatar = async (id: string, file: any) => {
   );
   return response;
 }
+
+export const forgotPassword = async (email: string) => {
+  const model = getCollection(memberCollection, memberSchema);
+  const existingMember = await model.find({ email: email.toLowerCase() })
+  if (existingMember.length > 0) {
+    const member = existingMember[0];
+    _sendRegistrationConfirmation(member.email, member.firstName, member.lastName, member.memberId, member.code);
+    return true;
+  }
+  return false;
+};

@@ -8,7 +8,8 @@ import {
   updateMember,
   getMember,
   getMemberByMemberId,
-  getMemberByMemberIdForEdit
+  getMemberByMemberIdForEdit,
+  forgotPassword
 } from "./service";
 
 const selfRealm = 100;
@@ -21,4 +22,5 @@ module.exports = function (router: any) {
   router.get("/member", asyncHandler(getMember));
   router.get("/member/:memberid", authorizeApiRead, asyncHandler(getMemberByMemberId));
   router.get("/member/:memberid/edit", asyncHandler(getMemberByMemberIdForEdit));
+  router.post("/member/forgotpassword", asyncHandler(forgotPassword));
 };
