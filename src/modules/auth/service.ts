@@ -8,6 +8,14 @@ import { userCollection } from "../user/model";
 
 const selfRealm = 100;
 
+export const otrs = async (req: any, res: any, next: any) => {
+  const payload = req.body;
+  console.log("****OTRS****");
+  console.log(payload);
+  res.status(200);
+  res.end();
+}
+
 export const signin = async (req: any, res: any, next: any) => {
   const payload = req.body;
   if (
