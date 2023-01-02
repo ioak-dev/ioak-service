@@ -33,7 +33,7 @@ export const addMember = async (data: any) => {
     views: 0
   });
   _sendRegistrationConfirmation(member.email, member.firstName, member.lastName, member.memberId, member.code);
-  return member;
+  return toMember(member);
 };
 
 const _sendRegistrationConfirmation = (email: string, firstName: string, lastName: string, memberId: number, password: string) => {
@@ -56,16 +56,18 @@ const _sendRegistrationConfirmation = (email: string, firstName: string, lastNam
 
 export const updateMember = async (memberId: string, data: any) => {
   const model = getCollection(memberCollection, memberSchema);
-  return await model.findByIdAndUpdate(
+  const response = await model.findByIdAndUpdate(
     memberId, { ...data, email: data.email.toLowerCase(), status: data.status === "Registered" ? "Active" : data.status },
     { new: true, upsert: true }
   );
+  return toMember(response);
 };
 
 export const getMember = async () => {
   const model = getCollection(memberCollection, memberSchema);
 
-  return await model.find();
+  const members: any = await model.find();
+  return members.map((member: any) => toMember(member._doc));
 };
 
 export const getMemberById = async (id: string) => {
@@ -73,9 +75,7 @@ export const getMemberById = async (id: string) => {
 
   const memberResponse = await model.findOne({ _id: id });
 
-  return {
-    ...memberResponse._doc
-  };
+  return toMember(memberResponse._doc);
 };
 
 export const getMemberByMemberId = async (memberId: string, userId: string | null, trackViewCount?: boolean) => {
@@ -99,7 +99,7 @@ export const getMemberByMemberId = async (memberId: string, userId: string | nul
 
   // console.log(member);
 
-  return member;
+  return toMember(member);
 };
 
 export const updateMemberAvatar = async (id: string, file: any) => {
@@ -111,7 +111,7 @@ export const updateMemberAvatar = async (id: string, file: any) => {
     id, { profilePic: fileurl },
     { new: true, upsert: true }
   );
-  return response;
+  return toMember(response);
 }
 
 export const forgotPassword = async (email: string) => {
@@ -124,3 +124,8 @@ export const forgotPassword = async (email: string) => {
   }
   return false;
 };
+
+export const toMember = (member: any) => {
+  let { code, ...response }: any = { ...member }
+  return response;
+}
