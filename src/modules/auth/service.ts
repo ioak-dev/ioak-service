@@ -5,6 +5,7 @@ import { memberSchema, memberCollection } from "../member/model";
 import * as Helper from "./helper";
 import { getCollection } from "../../lib/dbutils";
 import { userCollection } from "../user/model";
+import { comparePassword } from "../../lib/authutils";
 
 const selfRealm = 100;
 
@@ -38,7 +39,7 @@ export const signin = async (req: any, res: any, next: any) => {
   }
 
   // const outcome = await bcrypt.compare(payload.password, user.hash);
-  const outcome = payload.password === member.code;
+  const outcome = await comparePassword(payload.password, member.code);
   if (!outcome) {
     res.status(401);
     res.send({ error: { message: "Incorrect password" } });
@@ -135,3 +136,12 @@ export const changepassword = async (req: any, res: any, next: any) => {
   res.send(outcome);
   res.end();
 };
+
+
+
+export const migrateHash = async (req: any, res: any, next: any) => {
+  await Helper.migrateHash();
+  res.status(200);
+  res.end();
+};
+

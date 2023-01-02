@@ -4,6 +4,8 @@ import fs from "fs";
 import jwt from "jsonwebtoken";
 import { add, addDays, differenceInSeconds } from "date-fns";
 
+import { hashPassword, comparePassword } from '../../lib/authutils'
+
 import { getCollection } from "../../lib/dbutils";
 import { userCollection, userSchema } from "../user/model";
 import { memberCollection, memberSchema } from "../member/model";
@@ -88,7 +90,21 @@ export const decodeAppToken = async (token: string) => {
 export const changepassword = async (userId: String, code: string) => {
   const model = getCollection(memberCollection, memberSchema);
   return await model.findByIdAndUpdate(
-    userId, { code },
+    userId, { code: await hashPassword(code) },
     { new: true, upsert: true }
   );
+}
+
+export const migrateHash = async () => {
+  const model = getCollection(memberCollection, memberSchema);
+  const list = await model.find();
+  for (let i = 0; i < list.length; i++) {
+    const item = list[i];
+    console.log(item._id, item.code)
+    await model.findByIdAndUpdate(
+      item._id, { code: await hashPassword(item.code || '123') },
+      { new: true, upsert: true }
+    );
+  }
+  return;
 }
