@@ -8,31 +8,42 @@ import fs from "fs";
 import { convertMessage, sendMail } from "../../lib/mailutils";
 import { processFileUpload } from "../../lib/minioutils";
 import { nextval } from "../sequence/service";
+import { hashPassword } from "../../lib/authutils";
 
 const adminKey = process.env.ADMIN_KEY || "1234";
 
 const appRoot = process.cwd();
 
+const updateCode = async (memberId: String, code: string) => {
+  const model = getCollection(memberCollection, memberSchema);
+  const response = await model.findByIdAndUpdate(
+    memberId, { code: await hashPassword(code) },
+    { new: true, upsert: true }
+  );
+}
+
 export const addMember = async (data: any) => {
   const model = getCollection(memberCollection, memberSchema);
   const existingMember = await model.find({ email: data.email })
+  const code = uuidv4();
   if (existingMember.length > 0) {
     const member = existingMember[0];
-    _sendRegistrationConfirmation(member.email, member.firstName, member.lastName, member.memberId, member.code);
+    await updateCode(member._id, code);
+    _sendRegistrationConfirmation(member.email, member.firstName, member.lastName, member.memberId, code);
     return "EMAIL_EXISTS";
   }
   const member = await model.create({
     ...data,
     email: data.email.toLowerCase(),
     from: parse(data.memberDate, "yyyy-MM-dd", new Date()),
-    code: uuidv4(),
     memberId: await nextval({
       field: "memberId"
     }),
     status: "Registered",
-    views: 0
+    views: 0,
+    code: await hashPassword(code)
   });
-  _sendRegistrationConfirmation(member.email, member.firstName, member.lastName, member.memberId, member.code);
+  _sendRegistrationConfirmation(member.email, member.firstName, member.lastName, member.memberId, code);
   return toMember(member);
 };
 
@@ -119,7 +130,9 @@ export const forgotPassword = async (email: string) => {
   const existingMember = await model.find({ email: email.toLowerCase() })
   if (existingMember.length > 0) {
     const member = existingMember[0];
-    _sendRegistrationConfirmation(member.email, member.firstName, member.lastName, member.memberId, member.code);
+    const code = uuidv4();
+    await updateCode(member._id, code);
+    _sendRegistrationConfirmation(member.email, member.firstName, member.lastName, member.memberId, code);
     return true;
   }
   return false;
