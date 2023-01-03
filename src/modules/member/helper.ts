@@ -44,7 +44,7 @@ export const addMember = async (data: any) => {
     code: await hashPassword(code)
   });
   _sendRegistrationConfirmation(member.email, member.firstName, member.lastName, member.memberId, code);
-  return toMember(member);
+  return toMember(member._doc);
 };
 
 const _sendRegistrationConfirmation = (email: string, firstName: string, lastName: string, memberId: number, password: string) => {
