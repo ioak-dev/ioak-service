@@ -25,7 +25,7 @@ const updateCode = async (memberId: String, code: string) => {
 export const addMember = async (data: any) => {
   const model = getCollection(memberCollection, memberSchema);
   const existingMember = await model.find({ email: data.email })
-  const code = uuidv4();
+  const code = data.code;
   if (existingMember.length > 0) {
     const member = existingMember[0];
     await updateCode(member._id, code);
