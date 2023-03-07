@@ -1,5 +1,3 @@
-const multer = require("multer");
-var upload = multer();
 import { asyncHandler } from "../../handler";
 import { authorizeApi, authorizeApiRead } from "../../middlewares";
 import {

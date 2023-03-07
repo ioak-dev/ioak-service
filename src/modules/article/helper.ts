@@ -14,25 +14,37 @@ const adminKey = process.env.ADMIN_KEY || "1234";
 
 const appRoot = process.cwd();
 
-export const addArticle = async (data: any) => {
+export const addArticle = async (data: any, userId: string) => {
+  console.log(data, userId);
   const model = getCollection(articleCollection, articleSchema);
   if (data._id) {
     return await model.findByIdAndUpdate(
-      data._id, { title: data.title, description: data.description, tags: data.tags },
+      data._id, {
+        title: data.title,
+      description: data.description,
+      summary: data.summary,
+      featuredImage: data.featuredImage,
+      tags: data.tags, updatedBy: userId
+    },
       { new: true, upsert: true }
     );
   }
   return await model.create({
     ...data,
+    createdBy: userId, updatedBy: userId,
     views: 0,
     likes: 0,
   });
 };
 
-export const updateArticle = async (articleId: string, data: any) => {
+export const updateArticle = async (articleId: string, data: any, userId: string) => {
   const model = getCollection(articleCollection, articleSchema);
   const response = await model.findByIdAndUpdate(
-    articleId, { title: data.title, description: data.description, tags: data.tags },
+    articleId, { 
+      title: data.title,
+    description: data.description,
+    summary: data.summary,
+    featuredImage: data.featuredImage, tags: data.tags, updatedBy: userId },
     { new: true, upsert: true }
   );
   return response;

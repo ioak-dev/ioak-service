@@ -7,15 +7,16 @@ import { getCollection } from "../../lib/dbutils";
 const selfRealm = 100;
 
 export const addArticle = async (req: any, res: any) => {
-  const article: any = await Helper.addArticle(req.body);
+  const userId = req.user.id;
+  const article: any = await Helper.addArticle(req.body, userId);
   res.status(200);
   res.send(article);
   res.end();
 };
 
 export const updateArticle = async (req: any, res: any) => {
-  const id = req.user.id;
-  const article: any = await Helper.updateArticle(req.params.id, req.body);
+  const userId = req.user.id;
+  const article: any = await Helper.updateArticle(req.params.id, req.body, userId);
   res.status(200);
   res.send(article);
   res.end();

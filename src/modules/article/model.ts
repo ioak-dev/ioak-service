@@ -5,9 +5,13 @@ const articleSchema = new Schema(
   {
     title: { type: String },
     description: { type: String },
+    summary: { type: String },
+    featuredImage: { type: String },
     tags: { type: Array },
     views: { type: Number },
-    likes: { type: Number }
+    likes: { type: Number },
+    createdBy: { type: String },
+    updatedBy: { type: String }
   },
   { timestamps: true }
 );
